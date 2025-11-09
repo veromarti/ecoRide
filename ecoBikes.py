@@ -7,6 +7,7 @@ servicio=False
 usuario = False
 menu = False
 cont = 1
+total = 0
 
 dict_usuario = {
     "Usuario ":{"Nombre": "",
@@ -15,12 +16,12 @@ dict_usuario = {
     "Tiempo": 0,
     "Tarifa por minuto": 0.0,
     "Costo bicicleta": 0,
-    "Tiempo de uso":0},
+    "Tiempo de uso":0,
+    "Descuento": 0,
+    "Multa": 0,
+    "Costo Total": 0},
     "Metodo de Pago":"",
-    "Costo Total": 0,
-    "Descuentos": 0,
-    "Multa": 0
-}
+    "Valor a Pagar":0.0}
 
 def registro_usuario():
     print("\nIngrese su información de usuario:\n")
@@ -45,11 +46,9 @@ def crear_servicio(bicicleta, tiempo, num_servicio):
     
     print("\nServicio agregado exitosamente.")
     
-def resumen_pedido():
-    print("\nResumen del servicio:")
-    for i, j in dict_usuario.items():
-        print(f"{i}: {j}")
-    print("\nGracias por usar ecoBikes.")
+def resumen_pedido(valor):
+    print("\nResumen del servicio:\n")
+    print("Querido usuario, el valor a pagar es: $", valor)
     
 def calcular_costo(bicicleta, tiempo):
     costo = precios_bikes[bicicleta-1] * tiempo
@@ -168,7 +167,6 @@ while not menu:
             
             print("\n")
             tiempo_de_uso(cont)
-            print(dict_usuario)
             pago = mostrar_metodo()
             dict_usuario["Metodo de Pago"] = pago
 
@@ -176,24 +174,17 @@ while not menu:
                 tiempo = dict_usuario["Servicio " + str(i+1)]["Tiempo"]
                 tiempo_real = dict_usuario["Servicio " + str(i+1)]["Tiempo de uso"]
                 descuento, recargo_finde, multa = descuentos(tiempo, tiempo_real, pago)
-                tarifa = dict_usuario["Servicio " + str(i+1)]["Tarifa"]
+                tarifa = dict_usuario["Servicio " + str(i+1)]["Tarifa por minuto"]
                 valor_base = int(dict_usuario["Servicio " + str(i+1)]["Costo bicicleta"])
                 valor_pago = valor_final(valor_base, descuento, recargo_finde, multa, tiempo, tiempo_real, tarifa)
+                total += valor_pago
 
                 dict_usuario["Servicio " + str(i+1)]["Descuento"] = descuento
                 dict_usuario["Servicio " + str(i+1)]["Multa"] = multa
                 dict_usuario["Servicio " + str(i+1)]["Costo Total"] = valor_pago
+                dict_usuario["Valor a Pagar"] = total
 
-                print(tiempo)
-                print(tiempo_real)
-                print(descuento)
-                print(recargo_finde)
-                print(multa)
-                print(valor_base)
-                print(valor_pago)
-
-            # dict_usuario["Costo Total"] = valor_pago
-            # resumen_pedido()
+            resumen_pedido(total)
         
         else:
             print("\nNo hay ningun servicio pendiente de pago\n")

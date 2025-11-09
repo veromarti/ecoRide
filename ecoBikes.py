@@ -19,7 +19,7 @@ dict_usuario = {
     "Metodo de Pago":"",
     "Costo Total": 0,
     "Descuentos": 0,
-    "Multas": 0
+    "Multa": 0
 }
 
 def registro_usuario():
@@ -107,7 +107,6 @@ def tiempo_de_uso(num_pedidos):
         dict_usuario["Servicio " + str(i+1)]["Tiempo de uso"] = tiempo_real
     
 def descuentos(tiempo, tiempo_uso, metodo_pago):
-    
     fecha= date.today()
     dia = fecha.weekday() #0 = Lunes 6= Domingo  
     descuento = 0  
@@ -124,6 +123,17 @@ def descuentos(tiempo, tiempo_uso, metodo_pago):
         multa = 10000
 
     return descuento, recargo_finde, multa
+
+def valor_final(valor_inicial, discount, extra_fds, multa, time, real_time,rate):
+    
+    if real_time > time:
+        valor_inicial = rate * real_time
+    else:
+        pass
+
+    valor_final = (valor_inicial * (1-discount)) * (1+extra_fds) + multa
+
+    return valor_final
 
 while not menu:
     opcion = menu_principal()
@@ -160,16 +170,19 @@ while not menu:
             tiempo_de_uso(cont)
             print(dict_usuario)
             pago = mostrar_metodo()
+            dict_usuario["Metodo de Pago"] = pago
 
             for i in range(cont):
                 tiempo = dict_usuario["Servicio " + str(i+1)]["Tiempo"]
                 tiempo_real = dict_usuario["Servicio " + str(i+1)]["Tiempo de uso"]
                 descuento, recargo_finde, multa = descuentos(tiempo, tiempo_real, pago)
-                print(dict_usuario["Servicio " + str(i+1)]["Costo bicicleta"])
-                print(type(dict_usuario["Servicio " + str(i+1)]["Costo bicicleta"]))
-
+                tarifa = dict_usuario["Servicio " + str(i+1)]["Tarifa"]
                 valor_base = int(dict_usuario["Servicio " + str(i+1)]["Costo bicicleta"])
-                valor_pago = (valor_base * (1-descuento)) * (1+recargo_finde) + multa
+                valor_pago = valor_final(valor_base, descuento, recargo_finde, multa, tiempo, tiempo_real, tarifa)
+
+                dict_usuario["Servicio " + str(i+1)]["Descuento"] = descuento
+                dict_usuario["Servicio " + str(i+1)]["Multa"] = multa
+                dict_usuario["Servicio " + str(i+1)]["Costo Total"] = valor_pago
 
                 print(tiempo)
                 print(tiempo_real)

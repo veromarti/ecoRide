@@ -36,8 +36,14 @@ def registro_usuario():
     
     while True:
         telefono = input("Teléfono: ").strip()
-        if not telefono or not telefono.isdigit():
-            print("El teléfono no puede estar vacío y debe contener solo números.\n")
+        if not telefono:
+            print("El teléfono no puede estar vacío\n")
+            continue
+        if not telefono.isdigit():
+            print("Valor no valido. El campo telefono debe contener solo números")
+            continue
+        if len(telefono) != 10:
+            print("El numero de telefono debe tener exactamente 10 digitos. Vuelva a ingresarlo")
             continue
         break
     
@@ -81,10 +87,10 @@ def menu_principal():
         "3. Pagar\n"
         "4. Salir\n"
     )
-    opcion = validar_entero(menu_texto, "Seleccione una opción (1-4): ", 1, 4)
+    opcion = validar_entero_menu(menu_texto, "Seleccione una opción (1-4): ", 1, 4)
     return opcion
 
-def pedir_entero(mensaje, minimo=None, maximo=None):
+def validar_entero(mensaje, minimo=None, maximo=None):
     while True:
         try:
             valor = int(input(mensaje).strip())
@@ -94,7 +100,7 @@ def pedir_entero(mensaje, minimo=None, maximo=None):
         except ValueError:
             print("Entrada inválida. Ingrese un número válido.\n")
             
-def validar_entero(menu_texto, mensaje, minimo=None, maximo=None):
+def validar_entero_menu(menu_texto, mensaje, minimo=None, maximo=None):
     while True:
         print(menu_texto)
         try:
@@ -110,7 +116,7 @@ def mostrar_bikes():
     for i in range(len(tipos_bikes)):
         menu_texto += (f"{str(i+1)}.{tipos_bikes[i]}- ${str(precios_bikes[i])} por minuto\n")
         
-    opcion = validar_entero(menu_texto, "\nSeleccione el tipo de bicicleta (1-4): ", 1, len(tipos_bikes))
+    opcion = validar_entero_menu(menu_texto, "\nSeleccione el tipo de bicicleta (1-4): ", 1, len(tipos_bikes))
     return opcion
 
 def mostrar_tarifas():
@@ -125,7 +131,7 @@ def mostrar_tarifas():
 def mostrar_metodo():
     menu_texto = ("\n--- Métodos de Pago ---\n1. Efectivo\n2. Tarjeta\n3. Puntos\n4. Salir")
     while True: 
-        opcion = validar_entero(menu_texto, "\n¿Cuál método de pago desea utilizar? (1-4): ", 1, 4)
+        opcion = validar_entero_menu(menu_texto, "\n¿Cuál método de pago desea utilizar? (1-4): ", 1, 4)
 
         if opcion == 1:
             metodo_pago = "Efectivo"
@@ -145,7 +151,7 @@ def tiempo_de_uso(num_pedidos):
     for i in range(num_pedidos):
         print("\nServicio " , i+1)
         print(dict_usuario["Servicio " + str(i+1)])
-        tiempo_real = pedir_entero("\nIngrese el tiempo real de uso para este servicio en minutos: ", 1)
+        tiempo_real = validar_entero("\nIngrese el tiempo real de uso para este servicio en minutos: ", 1)
         dict_usuario["Servicio " + str(i+1)]["Tiempo de uso"] = tiempo_real
     
 def descuentos(tiempo, tiempo_uso, metodo_pago):
@@ -188,7 +194,7 @@ while not menu:
         
         while not servicio:
             bicicleta = mostrar_bikes()
-            tiempo = pedir_entero("Ingrese el tiempo de uso en minutos: ",1)
+            tiempo = validar_entero("Ingrese el tiempo de uso en minutos: ",1)
             
             crear_servicio(bicicleta, tiempo, cont)
             desea_agregar = input("\nDesea agregar otro servicio -> (y/n): ")
@@ -200,7 +206,9 @@ while not menu:
                 
             elif desea_agregar.lower() == "n":
                 print("- - - Gracias por usar el servicio de alquiler - - -")
-                servicio = True   
+                servicio = True     
+            else: 
+                print("Error. Ingrese una opción valida -> (y: si / n: no):")
 
     elif opcion == 2:
         mostrar_tarifas()
@@ -235,7 +243,7 @@ while not menu:
             confirmacion_pago = ("\n--- Confirmación de pago ---\n"
                 "1. Confirmar pago\n"
                 "2. Cancelar y volver al menú\n" )
-            opcion_confirmacion = validar_entero(confirmacion_pago, "Seleccione una opción (1-2): ", 1, 2)
+            opcion_confirmacion = validar_entero_menu(confirmacion_pago, "Seleccione una opción (1-2): ", 1, 2)
             
             if opcion_confirmacion == 1:
                 print("\nPago realizado con éxito. ¡Gracias por usar EcoRide!\n")

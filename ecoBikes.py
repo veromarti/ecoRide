@@ -65,7 +65,7 @@ def crear_servicio(bicicleta, tiempo, num_servicio):
     
     print("\nServicio agregado exitosamente.")
     
-def resumen_pedido(valor):
+def resumen_pedido(valor, cant_servicio):
     print("\nResumen del servicio:")
 
     for k in range(cant_servicio):

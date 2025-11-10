@@ -64,7 +64,8 @@ def crear_servicio(bicicleta, tiempo, num_servicio):
     "Costo bicicleta": total_cost}
     
     print("\nServicio agregado exitosamente.")
-    
+
+#aqui le mostramos al usuario el estado de su cuenta (mostramos todos los detalles del servicio)     
 def resumen_pedido(valor, cant_servicio):
     print("\nResumen del servicio:")
 
@@ -91,7 +92,7 @@ def menu_principal():
     opcion = validar_entero(menu_texto, "Seleccione una opción (1-4): ", 1, 4)
     return opcion
 
-
+#Aqui le pedimos al usuario que ingrese un numero ya que lo anteriormente ingresado no correspondia con lo solicitado
 def pedir_entero(mensaje, minimo=None, maximo=None):
     while True:
         try:
@@ -103,7 +104,7 @@ def pedir_entero(mensaje, minimo=None, maximo=None):
             print("Entrada inválida. Ingrese un número válido.\n")
             
             
-            
+#con este estamos validando que la opcion que escoja del menu sea un numero entero y si no le notificamos al usuario            
 def validar_entero(menu_texto, mensaje, minimo=None, maximo=None):
     while True:
         print(menu_texto)

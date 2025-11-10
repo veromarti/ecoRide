@@ -12,7 +12,6 @@ menu = False
 cont = 1
 total = 0
 
-#Diccionario el cual nos crea una cuenta para el usuario donde guardaremos todos los datos del sistema
 dict_usuario = {
     "Usuario ":{"Nombre": "",
     "Telefono": ""},
@@ -65,10 +64,14 @@ def crear_servicio(bicicleta, tiempo, num_servicio):
     "Costo bicicleta": total_cost}
     
     print("\nServicio agregado exitosamente.")
-
-#Con esta funcion hacemos un resumen del servicio    
+    
 def resumen_pedido(valor):
     print("\nResumen del servicio:")
+
+    for k in range(cant_servicio):
+        print("\n")
+        for i, j in dict_usuario["Servicio " + str(k+1)].items():
+            print(f"{i}: {j}")
     print("Querido usuario, el valor a pagar es: $", valor)
 
 #Aqui calculamos el costo del alquiler de la bicicleta utilizada por el usuario, se calcula costo por bicicleta, no por el total de las bicicletas alquiladas    
@@ -88,7 +91,7 @@ def menu_principal():
     opcion = validar_entero(menu_texto, "Seleccione una opción (1-4): ", 1, 4)
     return opcion
 
-#Con esta funcion le decimos al usuario que hay un error con lo que ingresó por pantalla y que debe ingresar un numero valido
+
 def pedir_entero(mensaje, minimo=None, maximo=None):
     while True:
         try:
@@ -99,7 +102,8 @@ def pedir_entero(mensaje, minimo=None, maximo=None):
         except ValueError:
             print("Entrada inválida. Ingrese un número válido.\n")
             
-#Con esta de aqui hacemos lo mismo que en la anterior pero con enfasis en el menu, para asi reducir el margen de errores                       
+            
+            
 def validar_entero(menu_texto, mensaje, minimo=None, maximo=None):
     while True:
         print(menu_texto)
@@ -248,7 +252,7 @@ while not menu:
                 dict_usuario["Servicio " + str(i+1)]["Costo Total"] = valor_pago
                 dict_usuario["Valor a Pagar"] = total
 
-            resumen_pedido(total)
+            resumen_pedido(total, cont)
             
             confirmacion_pago = ("\n--- Confirmación de pago ---\n"
                 "1. Confirmar pago\n"
@@ -267,7 +271,7 @@ while not menu:
         else:
             print("\nNo hay ningun servicio pendiente de pago\n")
             
-    #Aqui si el usuario desea salir del sistema lo validamos y cerramos el menu con un true        
+
     elif opcion == 4:
         print ("\nGracias por usar el servicio EcoRides")
         menu = True

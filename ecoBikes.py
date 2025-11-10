@@ -1,15 +1,18 @@
+#Importamos un modulo que nos va a ayudar con la gestion del tiempo
 from datetime import date
 
+#Creamos las listas donde tendremos el tipo de bike y la tarifa de alquiler por minuto
 tipos_bikes=["Infantil", "Electrica", "Deportiva", "Estandar"]
 precios_bikes=[250, 500, 400, 200]
 
+#Inicializamos variables principales en el valor que necesitamos para ejecutar los ciclos
 servicio=False
 usuario = False
 menu = False
 cont = 1
 total = 0
 
-#pruebita
+#Diccionario el cual nos crea una cuenta para el usuario donde guardaremos todos los datos del sistema
 dict_usuario = {
     "Usuario ":{"Nombre": "",
     "Telefono": ""},
@@ -24,6 +27,7 @@ dict_usuario = {
     "Metodo de Pago":"",
     "Valor a Pagar":0.0}
 
+#Esta funcion nos ayuda a registrar al usuario 
 def registro_usuario():
     while True:
         nombre = input("Nombre: ").strip()
@@ -48,6 +52,7 @@ def registro_usuario():
     print("\nUsuario registrado con exito.\n")
     return user
 
+#Con esta funcion creamos el servicio y añadimos eso a la cuenta del usuario
 def crear_servicio(bicicleta, tiempo, num_servicio):
     bike = tipos_bikes[int(bicicleta)-1]
     rate = precios_bikes[int(bicicleta)-1]
@@ -60,15 +65,18 @@ def crear_servicio(bicicleta, tiempo, num_servicio):
     "Costo bicicleta": total_cost}
     
     print("\nServicio agregado exitosamente.")
-    
+
+#Con esta funcion hacemos un resumen del servicio    
 def resumen_pedido(valor):
     print("\nResumen del servicio:")
     print("Querido usuario, el valor a pagar es: $", valor)
-    
+
+#Aqui calculamos el costo del alquiler de la bicicleta utilizada por el usuario, se calcula costo por bicicleta, no por el total de las bicicletas alquiladas    
 def calcular_costo(bicicleta, tiempo):
     costo = precios_bikes[bicicleta-1] * tiempo
     return costo
-    
+
+#Esta funcion nos muestra el menu principal
 def menu_principal():
     menu_texto= (
         "\n--- BIENVENIDO A EcoRide ---\n"
@@ -80,7 +88,7 @@ def menu_principal():
     opcion = validar_entero(menu_texto, "Seleccione una opción (1-4): ", 1, 4)
     return opcion
 
-
+#Con esta funcion le decimos al usuario que hay un error con lo que ingresó por pantalla y que debe ingresar un numero valido
 def pedir_entero(mensaje, minimo=None, maximo=None):
     while True:
         try:
@@ -91,8 +99,7 @@ def pedir_entero(mensaje, minimo=None, maximo=None):
         except ValueError:
             print("Entrada inválida. Ingrese un número válido.\n")
             
-            
-            
+#Con esta de aqui hacemos lo mismo que en la anterior pero con enfasis en el menu, para asi reducir el margen de errores                       
 def validar_entero(menu_texto, mensaje, minimo=None, maximo=None):
     while True:
         print(menu_texto)
@@ -103,7 +110,8 @@ def validar_entero(menu_texto, mensaje, minimo=None, maximo=None):
             return valor
         except ValueError:
             print("Opción inválida. Ingrese un valor disponible en el menú.\n")
-    
+
+#Con esta funcion imprimimos las opciones de bicicletas disponibles para alquilar    
 def mostrar_bikes():
     menu_texto ="\n--- Tipos de Bicicletas ---\n"
     for i in range(len(tipos_bikes)):
@@ -112,6 +120,7 @@ def mostrar_bikes():
     opcion = validar_entero(menu_texto, "\nSeleccione el tipo de bicicleta (1-4): ", 1, len(tipos_bikes))
     return opcion
 
+#Con esta funcion imprimimos la tarifa de las bicicletas, tarifa x minuto
 def mostrar_tarifas():
     print("\n- - - - - Tarifas EcoRides - - - - -\n")
 
@@ -121,6 +130,7 @@ def mostrar_tarifas():
     opcion = (input("\nIngrese cualquier tecla para volver al Menu Principal ->"))
     return opcion
 
+#Aqui le pasamos al usuario una lista de opciones para el método de pago, y el escogerá una
 def mostrar_metodo():
     menu_texto = ("\n--- Métodos de Pago ---\n1. Efectivo\n2. Tarjeta\n3. Puntos\n4. Salir")
     while True: 
@@ -139,14 +149,16 @@ def mostrar_metodo():
         print(f"Método de pago seleccionado: {metodo_pago.capitalize()}") 
         dict_usuario["Metodo de Pago"] = metodo_pago
         return metodo_pago.lower()
-    
+
+#En esta funcion estamos verificando que el tiempo de uso sea meno o igual al tiempo solicitado al alquilar    
 def tiempo_de_uso(num_pedidos):
     for i in range(num_pedidos):
         print("\nServicio " , i+1)
         print(dict_usuario["Servicio " + str(i+1)])
         tiempo_real = pedir_entero("\nIngrese el tiempo real de uso para este servicio en minutos: ", 1)
         dict_usuario["Servicio " + str(i+1)]["Tiempo de uso"] = tiempo_real
-    
+
+#Con esta funcion estamos aplicando un descuento en el servicio por fin de semana    
 def descuentos(tiempo, tiempo_uso, metodo_pago):
     fecha= date.today()
     dia = fecha.weekday() #0 = Lunes 6= Domingo  
@@ -166,6 +178,7 @@ def descuentos(tiempo, tiempo_uso, metodo_pago):
 
     return descuento, recargo_finde, multa
 
+#Esta funcion nos ayuda a calcular el valor final del alquiler, incluyendo cantidad de bicicletas alquiladas, el tiempo y estos datos son traidos desde la cuenta del usuario
 def valor_final(valor_inicial, discount, extra_fds, multa, time, real_time,rate):
     
     if real_time > time:
@@ -177,9 +190,13 @@ def valor_final(valor_inicial, discount, extra_fds, multa, time, real_time,rate)
 
     return valor_final
 
+#Iniciamos la ejecucion del codigo principal, usamos un while para controlar el ingreso y la salida del usuario
 while not menu:
+    #pedimos una opcion a escojer y ejecutamos
     opcion = menu_principal()
 
+
+    #si la opcion es 1, vamos a registrar al usuario para posteriormente proceder con el alquiler de las unidades que se escojan
     if opcion == 1:
 
         while not usuario:
@@ -201,9 +218,11 @@ while not menu:
                 print("- - - Gracias por usar el servicio de alquiler - - -")
                 servicio = True   
 
+    #si la opcion es 2 procederiamos a mostrar exclusivamente las tarifas de las bicicletas para alquilar
     elif opcion == 2:
         mostrar_tarifas()
 
+    #si la opcion es 3, dirigimos al usuario a la seccion de pagos, donde se le mostrará el total acomulado en su cuenta, y los metodos por los cuales podrá realizar el pago
     elif opcion == 3: 
 
         if servicio:
@@ -244,13 +263,15 @@ while not menu:
             else:
                 print("\nPago cancelado. Puede volver a la opción de pagar cuando desee reintentar el pago.\n")
         
+        #Si en la cuenta no hay saldo pendiente, le decimos al usuario que no hay servicio pendiente
         else:
             print("\nNo hay ningun servicio pendiente de pago\n")
             
-
+    #Aqui si el usuario desea salir del sistema lo validamos y cerramos el menu con un true        
     elif opcion == 4:
         print ("\nGracias por usar el servicio EcoRides")
         menu = True
 
+    #Si lo ingresado es invalido, se notifica
     else:
         ("\nIngrese una opcion valida/n")

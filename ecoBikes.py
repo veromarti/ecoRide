@@ -60,8 +60,13 @@ def crear_servicio(bicicleta, tiempo, num_servicio):
     
     print("\nServicio agregado exitosamente.")
     
-def resumen_pedido(valor):
+def resumen_pedido(valor, cant_servicio):
     print("\nResumen del servicio:")
+
+    for k in range(cant_servicio):
+        print("\n")
+        for i, j in dict_usuario["Servicio " + str(k+1)].items():
+            print(f"{i}: {j}")
     print("Querido usuario, el valor a pagar es: $", valor)
     
 def calcular_costo(bicicleta, tiempo):
@@ -79,7 +84,6 @@ def menu_principal():
     opcion = validar_entero(menu_texto, "Seleccione una opción (1-4): ", 1, 4)
     return opcion
 
-
 def pedir_entero(mensaje, minimo=None, maximo=None):
     while True:
         try:
@@ -89,8 +93,6 @@ def pedir_entero(mensaje, minimo=None, maximo=None):
             return valor
         except ValueError:
             print("Entrada inválida. Ingrese un número válido.\n")
-            
-            
             
 def validar_entero(menu_texto, mensaje, minimo=None, maximo=None):
     while True:
@@ -228,7 +230,7 @@ while not menu:
                 dict_usuario["Servicio " + str(i+1)]["Costo Total"] = valor_pago
                 dict_usuario["Valor a Pagar"] = total
 
-            resumen_pedido(total)
+            resumen_pedido(total, cont)
             
             confirmacion_pago = ("\n--- Confirmación de pago ---\n"
                 "1. Confirmar pago\n"
@@ -246,7 +248,6 @@ while not menu:
         else:
             print("\nNo hay ningun servicio pendiente de pago\n")
             
-
     elif opcion == 4:
         print ("\nGracias por usar el servicio EcoRides")
         menu = True

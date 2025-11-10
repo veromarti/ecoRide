@@ -61,7 +61,7 @@ def crear_servicio(bicicleta, tiempo, num_servicio):
     print("\nServicio agregado exitosamente.")
     
 def resumen_pedido(valor):
-    print("\nResumen del servicio:\n")
+    print("\nResumen del servicio:")
     print("Querido usuario, el valor a pagar es: $", valor)
     
 def calcular_costo(bicicleta, tiempo):
@@ -76,7 +76,6 @@ def menu_principal():
         "3. Pagar\n"
         "4. Salir\n"
     )
-    print(menu_texto)
     opcion = validar_entero(menu_texto, "Seleccione una opción (1-4): ", 1, 4)
     return opcion
 
@@ -122,23 +121,19 @@ def mostrar_tarifas():
     return opcion
 
 def mostrar_metodo():
-    menu_texto = ("\n--- Metodos de Pago ---\n1. Efectivo\n2. Tarjeta \n3. Puntos\n4. Salir")
+    menu_texto = ("\n--- Métodos de Pago ---\n1. Efectivo\n2. Tarjeta\n3. Puntos\n4. Salir")
     while True: 
-        metodo_pago = validar_entero(menu_texto, "\n¿Cuál método de pago desea utilizar? (1-4): ", 1, 4)
+        opcion = validar_entero(menu_texto, "\n¿Cuál método de pago desea utilizar? (1-4): ", 1, 4)
 
-
-        if metodo_pago == "1":
+        if opcion == 1:
             metodo_pago = "Efectivo"
-        elif metodo_pago == "2":
+        elif opcion == 2:
             metodo_pago = "Tarjeta"
-        elif metodo_pago == "3":
+        elif opcion == 3:
             metodo_pago = "Puntos"
-        elif metodo_pago == "4":
+        elif opcion == 4:
             print("Saliendo del sistema...")
-            return  None
-        else:
-            print("Opción no válida. Intente de nuevo.\n")
-            continue
+            return None
 
         print(f"Método de pago seleccionado: {metodo_pago.capitalize()}") 
         dict_usuario["Metodo de Pago"] = metodo_pago
@@ -148,7 +143,7 @@ def tiempo_de_uso(num_pedidos):
     for i in range(num_pedidos):
         print("\nServicio " , i+1)
         print(dict_usuario["Servicio " + str(i+1)])
-        tiempo_real = pedir_entero("\nIngrese el tiempo real de uso para este servicio en minutos: ", tiempo)
+        tiempo_real = pedir_entero("\nIngrese el tiempo real de uso para este servicio en minutos: ", 1)
         dict_usuario["Servicio " + str(i+1)]["Tiempo de uso"] = tiempo_real
     
 def descuentos(tiempo, tiempo_uso, metodo_pago):
@@ -234,6 +229,19 @@ while not menu:
                 dict_usuario["Valor a Pagar"] = total
 
             resumen_pedido(total)
+            
+            confirmacion_pago = ("\n--- Confirmación de pago ---\n"
+                "1. Confirmar pago\n"
+                "2. Cancelar y volver al menú\n" )
+            opcion_confirmacion = validar_entero(confirmacion_pago, "Seleccione una opción (1-2): ", 1, 2)
+            
+            if opcion_confirmacion == 1:
+                print("\nPago realizado con éxito. ¡Gracias por usar EcoRide!\n")
+                servicio = False
+                total = 0
+                cont = 1
+            else:
+                print("\nPago cancelado. Puede volver a la opción de pagar cuando desee reintentar el pago.\n")
         
         else:
             print("\nNo hay ningun servicio pendiente de pago\n")

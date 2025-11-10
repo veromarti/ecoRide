@@ -9,6 +9,7 @@ menu = False
 cont = 1
 total = 0
 
+#pruebita
 dict_usuario = {
     "Usuario ":{"Nombre": "",
     "Telefono": ""},

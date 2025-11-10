@@ -24,9 +24,23 @@ dict_usuario = {
     "Valor a Pagar":0.0}
 
 def registro_usuario():
-    print("\nIngrese su información de usuario:\n")
-    nombre = input("Nombre: ")
-    telefono = input("Teléfono: ")
+    while True:
+        nombre = input("Nombre: ").strip()
+        if not nombre:
+            print("El nombre no puede estar vacío.\n")
+            continue
+        if not all(c.isalpha() or c.isspace() for c in nombre):
+            print("El nombre solo puede contener letras y espacios.\n")
+            continue
+        break
+    
+    while True:
+        telefono = input("Teléfono: ").strip()
+        if not telefono or not telefono.isdigit():
+            print("El teléfono no puede estar vacío y debe contener solo números.\n")
+            continue
+        break
+    
     dict_usuario["Usuario "]["Nombre"] = nombre
     dict_usuario["Usuario "]["Telefono"] = telefono
     user = True
@@ -55,16 +69,47 @@ def calcular_costo(bicicleta, tiempo):
     return costo
     
 def menu_principal():
-    print("\n--- BIENVENIDO A EcoRide ---\n")
-    print("1. Alquilar bicicleta\n2. Consultar Tarifas\n3. Pagar\n4. Salir")
-    opcion = int(input("\nSeleccione una opción (1-4): "))  
-    return opcion 
+    menu_texto= (
+        "\n--- BIENVENIDO A EcoRide ---\n"
+        "1. Alquilar bicicleta\n"
+        "2. Consultar Tarifas\n"
+        "3. Pagar\n"
+        "4. Salir\n"
+    )
+    print(menu_texto)
+    opcion = validar_entero(menu_texto, "Seleccione una opción (1-4): ", 1, 4)
+    return opcion
+
+
+def pedir_entero(mensaje, minimo=None, maximo=None):
+    while True:
+        try:
+            valor = int(input(mensaje).strip())
+            if minimo is not None and valor < minimo or maximo is not None and valor > maximo:
+                raise ValueError
+            return valor
+        except ValueError:
+            print("Entrada inválida. Ingrese un número válido.\n")
+            
+            
+            
+def validar_entero(menu_texto, mensaje, minimo=None, maximo=None):
+    while True:
+        print(menu_texto)
+        try:
+            valor = int(input(mensaje).strip())
+            if minimo is not None and valor < minimo or maximo is not None and valor > maximo:
+                raise ValueError
+            return valor
+        except ValueError:
+            print("Opción inválida. Ingrese un valor disponible en el menú.\n")
     
-def mostrar_bikes():    
+def mostrar_bikes():
+    menu_texto ="\n--- Tipos de Bicicletas ---\n"
     for i in range(len(tipos_bikes)):
-        print(str(i+1)+". " + tipos_bikes[i] + " - $" + str(precios_bikes[i]) + " por minuto")
+        menu_texto += (f"{str(i+1)}.{tipos_bikes[i]}- ${str(precios_bikes[i])} por minuto\n")
         
-    opcion = int(input("\nSeleccione el tipo de bicicleta (1-4): "))
+    opcion = validar_entero(menu_texto, "\nSeleccione el tipo de bicicleta (1-4): ", 1, len(tipos_bikes))
     return opcion
 
 def mostrar_tarifas():
@@ -77,24 +122,25 @@ def mostrar_tarifas():
     return opcion
 
 def mostrar_metodo():
-    print("1. Efectivo\n2. Tarjeta \n3. Puntos\n4. Salir")
+    menu_texto = ("\n--- Metodos de Pago ---\n1. Efectivo\n2. Tarjeta \n3. Puntos\n4. Salir")
+    while True: 
+        metodo_pago = validar_entero(menu_texto, "\n¿Cuál método de pago desea utilizar? (1-4): ", 1, 4)
 
-    metodo_pago = input("\n¿Cuál método de pago desea utilizar? (1-4): \n").strip()
 
-    if metodo_pago == "1":
-        metodo_pago = "Efectivo"
-    elif metodo_pago == "2":
-        metodo_pago = "Tarjeta"
-    elif metodo_pago == "3":
-        metodo_pago = "Puntos"
-    elif metodo_pago == "4":
-        print("Saliendo del sistema...")
-    else:
-        print("Opción no válida.")
-        metodo_pago = None
+        if metodo_pago == "1":
+            metodo_pago = "Efectivo"
+        elif metodo_pago == "2":
+            metodo_pago = "Tarjeta"
+        elif metodo_pago == "3":
+            metodo_pago = "Puntos"
+        elif metodo_pago == "4":
+            print("Saliendo del sistema...")
+            return  None
+        else:
+            print("Opción no válida. Intente de nuevo.\n")
+            continue
 
-    if metodo_pago:
-        print(f"Método de pago seleccionado: {metodo_pago}") 
+        print(f"Método de pago seleccionado: {metodo_pago.capitalize()}") 
         dict_usuario["Metodo de Pago"] = metodo_pago
         return metodo_pago.lower()
     
@@ -102,7 +148,7 @@ def tiempo_de_uso(num_pedidos):
     for i in range(num_pedidos):
         print("\nServicio " , i+1)
         print(dict_usuario["Servicio " + str(i+1)])
-        tiempo_real = int(input("\nIngrese el tiempo real de uso para este servicio en minutos: ")) 
+        tiempo_real = pedir_entero("\nIngrese el tiempo real de uso para este servicio en minutos: ", tiempo)
         dict_usuario["Servicio " + str(i+1)]["Tiempo de uso"] = tiempo_real
     
 def descuentos(tiempo, tiempo_uso, metodo_pago):
@@ -110,6 +156,7 @@ def descuentos(tiempo, tiempo_uso, metodo_pago):
     dia = fecha.weekday() #0 = Lunes 6= Domingo  
     descuento = 0  
     multa = 0
+    recargo_finde = 0 
     
     if tiempo > 60 and metodo_pago == "tarjeta":
         descuento = 0.10
@@ -144,7 +191,7 @@ while not menu:
         
         while not servicio:
             bicicleta = mostrar_bikes()
-            tiempo = int(input("Ingrese el tiempo de uso en minutos: "))
+            tiempo = pedir_entero("Ingrese el tiempo de uso en minutos: ",1)
             
             crear_servicio(bicicleta, tiempo, cont)
             desea_agregar = input("\nDesea agregar otro servicio -> (y/n): ")
@@ -168,6 +215,8 @@ while not menu:
             print("\n")
             tiempo_de_uso(cont)
             pago = mostrar_metodo()
+            if pago is None:
+                continue
             dict_usuario["Metodo de Pago"] = pago
 
             for i in range(cont):

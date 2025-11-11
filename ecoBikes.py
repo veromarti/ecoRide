@@ -316,8 +316,6 @@ while not menu:
                 valor_pago = valor_final(valor_base, descuento, recargo_finde, multa, tiempo, tiempo_real, tarifa)
                 total += valor_pago
                 
-                
-                
                 valor_descuento = valor_base * descuento
                 valor_recargo_fds =  valor_base * recargo_finde
 

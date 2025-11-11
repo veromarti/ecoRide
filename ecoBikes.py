@@ -219,18 +219,22 @@ while not menu:
             tiempo = validar_entero("Ingrese el tiempo de uso en minutos (máximo 180): ",1, 180)
             
             crear_servicio(bicicleta, tiempo, cont)
-            desea_agregar = input("\nDesea agregar otro servicio -> (y/n): ")
             print("\n")
-
-            if desea_agregar.lower() == "y":
-                cont += 1            
-                servicio = False
+             
+            while True: 
+                desea_agregar = input("\nDesea agregar otro servicio -> (y/n): ")
+            
+                if desea_agregar.lower() == "y":
+                    cont += 1            
+                    break
+                    
+                elif desea_agregar.lower() == "n":
+                    print("- - - Gracias por usar el servicio de alquiler - - -")
+                    servicio = True  
+                    break   
+                else: 
+                    print("Error. Ingrese una opción valida -> (y: si / n: no):")
                 
-            elif desea_agregar.lower() == "n":
-                print("- - - Gracias por usar el servicio de alquiler - - -")
-                servicio = True     
-            else: 
-                print("Error. Ingrese una opción valida -> (y: si / n: no):")
 
     #si la opcion es 2 procederiamos a mostrar exclusivamente las tarifas de las bicicletas para alquilar
     elif opcion == 2:

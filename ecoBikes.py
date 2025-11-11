@@ -269,8 +269,8 @@ while not menu:
                 total += valor_pago
 
                 dict_usuario["Servicio " + str(i+1)]["Descuento"] = descuento* valor_base
-                dict_usuario["Servicio " + str(i+1)]["Multa"] = multa * valor_base
-                dict_usuario["Servicio " + str(i+1)]["Recargo fin de semana"] = recargo_finde
+                dict_usuario["Servicio " + str(i+1)]["Multa"] = multa
+                dict_usuario["Servicio " + str(i+1)]["Recargo fin de semana"] = recargo_finde * valor_base
                 dict_usuario["Servicio " + str(i+1)]["Costo Total"] = valor_pago
                 dict_usuario["Valor a Pagar"] = total
 

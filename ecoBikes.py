@@ -172,12 +172,6 @@ def tiempo_de_uso(num_pedidos):
         tiempo_real = validar_entero("\nIngrese el tiempo real de uso para este servicio en minutos: ", 1)
         dict_usuario["Servicio " + str(k+1)]["Tiempo de uso"] = tiempo_real
 
-    # for i in range(num_pedidos):
-    #     print("\nServicio " , i+1)
-    #     print(dict_usuario["Servicio " + str(i+1)])
-    #     tiempo_real = validar_entero("\nIngrese el tiempo real de uso para este servicio en minutos: ", 1)
-    #     dict_usuario["Servicio " + str(i+1)]["Tiempo de uso"] = tiempo_real
-
 #Con esta funcion estamos aplicando un descuento en el servicio por fin de semana    
 def descuentos(tiempo, tiempo_uso, metodo_pago):
     fecha= date.today()

@@ -316,11 +316,10 @@ while not menu:
                 valor_pago = valor_final(valor_base, descuento, recargo_finde, multa, tiempo, tiempo_real, tarifa)
                 total += valor_pago
 
-                dict_usuario["Servicio " + str(i+1)]["Descuento"] = descuento* valor_base
-                dict_usuario["Servicio " + str(i+1)]["Multa"] = multa
-                dict_usuario["Servicio " + str(i+1)]["Recargo fin de semana"] = recargo_finde * valor_base
-                dict_usuario["Servicio " + str(i+1)]["Costo Total"] = valor_pago
-                dict_usuario["Valor a Pagar"] = total
+                dict_pago["Servicio " + str(i+1)]["Descuento"] = descuento
+                dict_pago["Servicio " + str(i+1)]["Multa"] = multa
+                dict_pago["Servicio " + str(i+1)]["Costo Total"] = valor_pago
+                dict_pago["Valor a Pagar"] = total
 
             resumen_pedido(total, cont)
             

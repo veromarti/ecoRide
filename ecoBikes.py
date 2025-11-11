@@ -315,9 +315,15 @@ while not menu:
                 valor_base = int(dict_pago["Servicio " + str(i+1)]["Costo bicicleta"])
                 valor_pago = valor_final(valor_base, descuento, recargo_finde, multa, tiempo, tiempo_real, tarifa)
                 total += valor_pago
+                
+                
+                
+                valor_descuento = valor_base * descuento
+                valor_recargo_fds =  valor_base * recargo_finde
 
-                dict_pago["Servicio " + str(i+1)]["Descuento"] = descuento
+                dict_pago["Servicio " + str(i+1)]["Descuento"] = valor_descuento
                 dict_pago["Servicio " + str(i+1)]["Multa"] = multa
+                dict_pago["Servicio " + str(i+1)]["Recargo finde"] = valor_recargo_fds
                 dict_pago["Servicio " + str(i+1)]["Costo Total"] = valor_pago
                 dict_pago["Valor a Pagar"] = total
 

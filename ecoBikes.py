@@ -198,21 +198,25 @@ def tiempo_de_uso(num_pedidos):
         tiempo_real = validar_entero("\nIngrese el tiempo real de uso para este servicio en minutos: ", 1)
         dict_servicio["Servicio " + str(k+1)]["Tiempo de uso"] = tiempo_real
 
-#Con esta funcion estamos aplicando un descuento en el servicio por fin de semana    
+#Con esta funcion validamos los descuentos, recargos y multas que aplican a cada servicio 
 def descuentos(tiempo, tiempo_uso, metodo_pago):
     fecha= date.today()
-    dia = fecha.weekday() #0 = Lunes 6= Domingo  
+    dia = fecha.weekday()
     descuento = 0  
     multa = 0
     recargo_finde = 0 
-    
-    if tiempo_uso> 60 and metodo_pago == "tarjeta":
-        descuento = 0.10
-    if tiempo_uso < 10 and metodo_pago == "puntos":
-        descuento = 0
-        pass
-    if dia in (5,6):
+
+    if metodo_pago == "tarjeta":
+        if tiempo_uso > 60:
+            descuento = 0.10
+
+    if metodo_pago == "puntos":
+        if tiempo_uso < 10:
+            descuento 
+
+    if dia in (5, 6):
         recargo_finde = 0.05
+
     if tiempo_uso > tiempo:
         multa = 10000
 
@@ -312,10 +316,11 @@ while not menu:
                 valor_pago = valor_final(valor_base, descuento, recargo_finde, multa, tiempo, tiempo_real, tarifa)
                 total += valor_pago
 
-                dict_pago["Servicio " + str(i+1)]["Descuento"] = descuento
-                dict_pago["Servicio " + str(i+1)]["Multa"] = multa
-                dict_pago["Servicio " + str(i+1)]["Costo Total"] = valor_pago
-                dict_pago["Valor a Pagar"] = total
+                dict_usuario["Servicio " + str(i+1)]["Descuento"] = descuento* valor_base
+                dict_usuario["Servicio " + str(i+1)]["Multa"] = multa
+                dict_usuario["Servicio " + str(i+1)]["Recargo fin de semana"] = recargo_finde * valor_base
+                dict_usuario["Servicio " + str(i+1)]["Costo Total"] = valor_pago
+                dict_usuario["Valor a Pagar"] = total
 
             resumen_pedido(total, cont)
             

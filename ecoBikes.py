@@ -10,12 +10,16 @@ servicio=False
 usuario = False
 menu = False
 cont = 1
+cont_usuario = 1
 total = 0
 
 #Molde de la cuenta del usuario. Donde se almacenan los datos principales de la cuenta y posteriormente se imprimen en ese formato
 dict_usuario = {
-    "Usuario ":{"Nombre": "",
-    "Telefono": ""},
+    "Usuario "+ str(cont_usuario): "",
+    "Telefono "+ str(cont_usuario): ""}
+    
+dict_servicio ={
+    "Telefono "+ str(cont_usuario): "",
     "Servicio " + str(cont):{"Bicleta": "",
     "Tiempo": 0,
     "Tarifa por minuto": 0.0,
@@ -28,17 +32,7 @@ dict_usuario = {
     "Valor a Pagar":0.0}
 
 #Esta funcion nos ayuda a registrar al usuario 
-def registro_usuario():
-    while True:
-        nombre = input("Nombre: ").strip()
-        if not nombre:
-            print("El nombre no puede estar vacío.\n")
-            continue
-        if not all(c.isalpha() or c.isspace() for c in nombre):
-            print("El nombre solo puede contener letras y espacios.\n")
-            continue
-        break
-    
+def buscar_usuario(cont_usuario, num_servicio):
     while True:
         telefono = input("Teléfono: ").strip()
         if not telefono:
@@ -52,11 +46,28 @@ def registro_usuario():
             continue
         break
     
-    dict_usuario["Usuario "]["Nombre"] = nombre
-    dict_usuario["Usuario "]["Telefono"] = telefono
-    user = True
-    print("\nUsuario registrado con exito.\n")
-    return user
+    if telefono in dict_usuario.values():
+        print("\nYa tiene un usuario creado en el sistema\n")
+        num_servicio += 1
+        
+    else:
+        while True:
+            nombre = input("Nombre: ").strip()
+            if not nombre:
+                print("El nombre no puede estar vacío.\n")
+                continue
+            if not all(c.isalpha() or c.isspace() for c in nombre):
+                print("El nombre solo puede contener letras y espacios.\n")
+                continue
+            break
+        print("\nUsuario registrado con exito.\n")
+        
+        dict_usuario["Usuario "+ str(cont_usuario)] = nombre
+        dict_usuario["Telefono "+ str(cont_usuario)] = telefono
+        dict_servicio["Telefono "+ str(cont_usuario)] = telefono
+        cont_usuario += 1
+    
+    return cont_usuario, num_servicio
 
 #Con esta funcion creamos el servicio y añadimos eso a la cuenta del usuario
 def crear_servicio(bicicleta, tiempo, num_servicio):
@@ -65,7 +76,7 @@ def crear_servicio(bicicleta, tiempo, num_servicio):
     total_cost = calcular_costo(bicicleta, tiempo)
     time = tiempo
     
-    dict_usuario["Servicio " + str(num_servicio)] = {"Bicicleta": bike,
+    dict_servicio["Servicio " + str(num_servicio)] = {"Bicicleta": bike,
     "Tiempo": time,
     "Tarifa por minuto": rate,
     "Costo bicicleta": total_cost}
@@ -78,9 +89,9 @@ def resumen_pedido(valor, cant_servicio):
 
     for k in range(cant_servicio):
         print(f"\n--Servicio {k+1}--")
-        for i, j in dict_usuario["Servicio " + str(k+1)].items():
+        for i, j in dict_servicio["Servicio " + str(k+1)].items():
             print(f"{i}: {j}")
-    print("\nQuerido usuario, el valor a pagar es: $", valor)
+    print("Querido usuario, el valor a pagar es: $", valor)
 
 #Aqui calculamos el costo del alquiler de la bicicleta utilizada por el usuario, se calcula costo por bicicleta, no por el total de las bicicletas alquiladas    
 def calcular_costo(bicicleta, tiempo):
@@ -109,7 +120,6 @@ def validar_entero(mensaje, minimo=None, maximo=None):
             return valor
         except ValueError:
             print("Entrada inválida. Ingrese un número válido.\n")
-            
             
 #con este estamos validando que la opcion que escoja del menu sea un numero entero y si no le notificamos al usuario            
 def validar_entero_menu(menu_texto, mensaje, minimo=None, maximo=None):
@@ -143,6 +153,22 @@ def mostrar_tarifas():
     return opcion
 
 #Aqui le pasamos al usuario una lista de opciones para el método de pago, y el escogerá una
+
+def obtener_servicios(diccionario, telefono_buscado):
+    valores = list(diccionario.values())
+    
+    if telefono_buscado not in valores:
+        return None  # Teléfono no encontrado
+        
+    # Buscar todos los servicios con el mismo número
+    servicios = {
+        k: v
+        for k, v in diccionario.items()
+        if k.startswith('Servicio')
+    }
+    
+    return servicios
+
 def mostrar_metodo():
     menu_texto = ("\n--- Métodos de Pago ---\n1. Efectivo\n2. Tarjeta\n3. Puntos\n4. Salir")
     while True: 
@@ -159,7 +185,7 @@ def mostrar_metodo():
             return None
 
         print(f"Método de pago seleccionado: {metodo_pago.capitalize()}") 
-        dict_usuario["Metodo de Pago"] = metodo_pago
+        dict_servicio["Metodo de Pago"] = metodo_pago
         return metodo_pago.lower()
 
 #En esta funcion estamos verificando que el tiempo de uso sea meno o igual al tiempo solicitado al alquilar    
@@ -167,35 +193,30 @@ def tiempo_de_uso(num_pedidos):
 
     for k in range(num_pedidos):
         print(f"\n--Servicio {k+1}--")
-        for i, j in dict_usuario["Servicio " + str(k+1)].items():
+        for i, j in dict_servicio["Servicio " + str(k+1)].items():
             print(f"{i}: {j}")
         tiempo_real = validar_entero("\nIngrese el tiempo real de uso para este servicio en minutos: ", 1)
-        dict_usuario["Servicio " + str(k+1)]["Tiempo de uso"] = tiempo_real
+        dict_servicio["Servicio " + str(k+1)]["Tiempo de uso"] = tiempo_real
 
-#Con esta funcion validamos los descuentos, recargos y multas que aplican a cada servicio
+#Con esta funcion estamos aplicando un descuento en el servicio por fin de semana    
 def descuentos(tiempo, tiempo_uso, metodo_pago):
     fecha= date.today()
-    dia = fecha.weekday()
+    dia = fecha.weekday() #0 = Lunes 6= Domingo  
     descuento = 0  
     multa = 0
     recargo_finde = 0 
-
-    if metodo_pago == "tarjeta":
-        if tiempo_uso > 60:
-            descuento = 0.10
-
-    if metodo_pago == "puntos":
-        if tiempo_uso < 10:
-            descuento 
-
-    if dia in (5, 6):
+    
+    if tiempo_uso> 60 and metodo_pago == "tarjeta":
+        descuento = 0.10
+    if tiempo_uso < 10 and metodo_pago == "puntos":
+        descuento = 0
+        pass
+    if dia in (5,6):
         recargo_finde = 0.05
-
     if tiempo_uso > tiempo:
         multa = 10000
 
     return descuento, recargo_finde, multa
-
 
 #Esta funcion nos ayuda a calcular el valor final del alquiler, incluyendo cantidad de bicicletas alquiladas, el tiempo y estos datos son traidos desde la cuenta del usuario
 def valor_final(valor_inicial, discount, extra_fds, multa, time, real_time,rate):
@@ -209,6 +230,13 @@ def valor_final(valor_inicial, discount, extra_fds, multa, time, real_time,rate)
 
     return valor_final
 
+#Con esta funcion limpiamos la cuenta del usuario una vez ya haya pagado
+def limpiar_servicios():
+    
+
+    dict_usuario["Metodo de Pago"] = ""
+    dict_usuario["Valor a Pagar"] = 0.0
+
 #Iniciamos la ejecucion del codigo principal, usamos un while para controlar el ingreso y la salida del usuario
 while not menu:
     #pedimos una opcion a escojer y ejecutamos
@@ -218,8 +246,8 @@ while not menu:
     #si la opcion es 1, vamos a registrar al usuario para posteriormente proceder con el alquiler de las unidades que se escojan
     if opcion == 1:
 
-        while not usuario:
-            usuario = registro_usuario()
+        cont_usuario, cont = buscar_usuario(cont_usuario,cont)
+        servicio = False
         
         while not servicio:
             bicicleta = mostrar_bikes()
@@ -242,7 +270,6 @@ while not menu:
                 else: 
                     print("Error. Ingrese una opción valida -> (y: si / n: no):")
                 
-
     #si la opcion es 2 procederiamos a mostrar exclusivamente las tarifas de las bicicletas para alquilar
     elif opcion == 2:
         mostrar_tarifas()
@@ -250,29 +277,45 @@ while not menu:
     #si la opcion es 3, dirigimos al usuario a la seccion de pagos, donde se le mostrará el total acomulado en su cuenta, y los metodos por los cuales podrá realizar el pago
     elif opcion == 3: 
 
-        if servicio:
+        while True:
+            telefono = input("Teléfono: ").strip()
+            if not telefono:
+                print("El teléfono no puede estar vacío\n")
+                continue
+            if not telefono.isdigit():
+                print("Valor no valido. El campo telefono debe contener solo números")
+                continue
+            if len(telefono) != 10:
+                print("El numero de telefono debe tener exactamente 10 digitos. Vuelva a ingresarlo")
+                continue
+            break
+        
+        
+    
+        dict_pago = obtener_servicios(dict_servicio,telefono)
+                
+        if servicio and dict_pago != None:
             
             print("\n")
             tiempo_de_uso(cont)
             pago = mostrar_metodo()
             if pago is None:
                 continue
-            dict_usuario["Metodo de Pago"] = pago
+            dict_servicio["Metodo de Pago"] = pago
 
             for i in range(cont):
-                tiempo = dict_usuario["Servicio " + str(i+1)]["Tiempo"]
-                tiempo_real = dict_usuario["Servicio " + str(i+1)]["Tiempo de uso"]
+                tiempo = dict_pago["Servicio " + str(i+1)]["Tiempo"]
+                tiempo_real = dict_pago["Servicio " + str(i+1)]["Tiempo de uso"]
                 descuento, recargo_finde, multa = descuentos(tiempo, tiempo_real, pago)
-                tarifa = dict_usuario["Servicio " + str(i+1)]["Tarifa por minuto"]
-                valor_base = int(dict_usuario["Servicio " + str(i+1)]["Costo bicicleta"])
+                tarifa = dict_pago["Servicio " + str(i+1)]["Tarifa por minuto"]
+                valor_base = int(dict_pago["Servicio " + str(i+1)]["Costo bicicleta"])
                 valor_pago = valor_final(valor_base, descuento, recargo_finde, multa, tiempo, tiempo_real, tarifa)
                 total += valor_pago
 
-                dict_usuario["Servicio " + str(i+1)]["Descuento"] = descuento* valor_base
-                dict_usuario["Servicio " + str(i+1)]["Multa"] = multa
-                dict_usuario["Servicio " + str(i+1)]["Recargo fin de semana"] = recargo_finde * valor_base
-                dict_usuario["Servicio " + str(i+1)]["Costo Total"] = valor_pago
-                dict_usuario["Valor a Pagar"] = total
+                dict_pago["Servicio " + str(i+1)]["Descuento"] = descuento
+                dict_pago["Servicio " + str(i+1)]["Multa"] = multa
+                dict_pago["Servicio " + str(i+1)]["Costo Total"] = valor_pago
+                dict_pago["Valor a Pagar"] = total
 
             resumen_pedido(total, cont)
             
@@ -283,9 +326,13 @@ while not menu:
             
             if opcion_confirmacion == 1:
                 print("\nPago realizado con éxito. ¡Gracias por usar EcoRide!\n")
+                
                 servicio = False
                 total = 0
                 cont = 1
+                
+                limpiar_servicios()
+                
             else:
                 print("\nPago cancelado. Puede volver a la opción de pagar cuando desee reintentar el pago.\n")
         
@@ -300,6 +347,5 @@ while not menu:
 
     #Si lo ingresado es invalido, se notifica
     else:
-        ("\nIngrese una opcion valida/n")
-
+        print("\nIngrese una opcion valida/n")
 
